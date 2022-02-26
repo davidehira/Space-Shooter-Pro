@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField]
     private float _speed = 6f;
+    private float _speedMultiplier = 2f;
 
     [SerializeField]
     private GameObject _laserPrefab;
@@ -22,8 +23,9 @@ public class Player : MonoBehaviour
 
     private SpawnManager _spawnManager;
 
-    [SerializeField]
-    private bool _isTripleShotActive;
+    
+    private bool _isTripleShotActive = false;
+    private bool _isSpeedBoostActive = false;
 
 
     // Start is called before the first frame update
@@ -59,8 +61,9 @@ public class Player : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        Vector3 direction = new Vector3(horizontalInput, verticalInput, 0) * _speed * Time.deltaTime;
-        transform.Translate(direction);
+        Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
+
+            transform.Translate(direction * _speed * Time.deltaTime);
 
         //Set the Player Bound
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, -9.1f, 9.1f), Mathf.Clamp(transform.position.y, -3.9f, 5.8f), 0);
@@ -86,12 +89,13 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        _lives = _lives - 1;
-        if(_lives < 1)
+     _lives--;
+        if (_lives < 1)
         {
             _spawnManager.OnPlayerDeath();
             Destroy(this.gameObject);
         }
+        
     }
 
     public void TripleShotActive()
@@ -104,6 +108,20 @@ public class Player : MonoBehaviour
 
         yield return new WaitForSeconds(5f);
         _isTripleShotActive = false;
+    }
+
+    public void SpeedBoostActive()
+    {
+        _isSpeedBoostActive = true;
+        _speed = _speed * _speedMultiplier;
+        StartCoroutine(SpeedBoostPowerDownRoutine());
+    }
+
+    IEnumerator SpeedBoostPowerDownRoutine()
+    {
+        yield return new WaitForSeconds(5.0f);
+        _isSpeedBoostActive = false;
+        _speed /= _speedMultiplier;
     }
 
 }
