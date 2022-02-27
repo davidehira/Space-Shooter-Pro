@@ -26,11 +26,11 @@ public class Powerup : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.tag == "Player")
+        if (other.tag == "Player")
         {
-            Player player = collision.transform.GetComponent<Player>();
+            Player player = other.transform.GetComponent<Player>();
 
             if (player !=null)
             {
@@ -41,6 +41,9 @@ public class Powerup : MonoBehaviour
                         break;
                     case 1:
                         player.SpeedBoostActive();
+                        break;
+                    case 2:
+                        player.ShieldActive();
                         break;
                     default:
                         Debug.Log("test");
