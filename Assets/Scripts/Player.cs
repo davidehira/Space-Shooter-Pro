@@ -25,6 +25,7 @@ public class Player : MonoBehaviour
     private int _lives = 3;
 
     private SpawnManager _spawnManager;
+    private UIManager _uiManager;
 
     
     private bool _isTripleShotActive = false;
@@ -32,17 +33,27 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool _isShieldActive = false;
 
+    [SerializeField]
+    private int _score;
+
 
     // Start is called before the first frame update
     void Start()
     {
         // assign the current player position = a new position(0, 0, 0)
         transform.position = new Vector3(0, 0, 0);
+
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
 
         if (_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is NULL");
+        }
+
+        if(_uiManager == null)
+        {
+            Debug.LogError(" The UIManager is NULL");
         }
     }
 
@@ -99,15 +110,15 @@ public class Player : MonoBehaviour
             StartCoroutine(ShieldPowerDownRoutine());
             return;
         }
-      _lives -=1;
-        if (_lives < 1)
+        _lives--;
+        _uiManager.UpdateLives(_lives);
+
+        if (_lives == 0)
         {
             _spawnManager.OnPlayerDeath();
             Destroy(this.gameObject);
 
         }
-
-
     }
 
     public void TripleShotActive()
@@ -131,7 +142,7 @@ public class Player : MonoBehaviour
 
     IEnumerator SpeedBoostPowerDownRoutine()
     {
-        yield return new WaitForSeconds(5.0f);
+        yield return new WaitForSeconds(5f);
         _isSpeedBoostActive = false;
         _speed /= _speedMultiplier;
     }
@@ -148,6 +159,12 @@ public class Player : MonoBehaviour
         _isShieldActive = true;
         _shieldVisualizer.SetActive(true);
 
+    }
+
+    public void AddScore(int points)
+    {
+        _score = _score + points;
+        _uiManager.UpdateScore(_score);
     }
 
 }
