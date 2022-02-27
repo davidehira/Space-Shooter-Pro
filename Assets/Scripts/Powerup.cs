@@ -46,7 +46,7 @@ public class Powerup : MonoBehaviour
                         player.ShieldActive();
                         break;
                     default:
-                        Debug.Log("test");
+                        Debug.Log("Default");
                         break;
                 }
               
