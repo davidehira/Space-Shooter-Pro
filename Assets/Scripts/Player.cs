@@ -18,6 +18,9 @@ public class Player : MonoBehaviour
     private GameObject _shieldVisualizer;
 
     [SerializeField]
+    private GameObject _rightengine, _leftengine;
+
+    [SerializeField]
     private float _fireRate = 0.02f;
     private float _canFire = -1f;
 
@@ -111,6 +114,16 @@ public class Player : MonoBehaviour
             return;
         }
         _lives--;
+
+        if (_lives == 2)
+        {
+            _rightengine.SetActive(true);
+        }
+
+        else if (_lives == 1)
+        {
+            _leftengine.SetActive(true);
+        }
         _uiManager.UpdateLives(_lives);
 
         if (_lives == 0)
